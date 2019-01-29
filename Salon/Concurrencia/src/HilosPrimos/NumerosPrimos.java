@@ -41,9 +41,9 @@ public class NumerosPrimos implements Runnable {
     }
 
     private boolean isPrimo(int n) {
-        
+
         if (n <= 2) {
-            return n > 1 ;
+            return n > 1;
         }
 
         if (n % 2 == 0) {
