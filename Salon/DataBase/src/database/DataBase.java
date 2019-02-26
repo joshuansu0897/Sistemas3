@@ -15,10 +15,10 @@ public class DataBase {
         ResultSet rs = null;
 
         try {
-            conn = DriverManager.getConnection("SELECT expediente, nombre, sexo, activo FROM table_name");
+            conn = DriverManager.getConnection("url connection");
 
             st = conn.createStatement();
-            rs = st.executeQuery("SELECT * FROM table_name");
+            rs = st.executeQuery("SELECT expediente, nombre, sexo, activo FROM table_name");
 
             System.out.println("expediente \t nombre \t sexo \t activo");
             while (rs.next()) {
