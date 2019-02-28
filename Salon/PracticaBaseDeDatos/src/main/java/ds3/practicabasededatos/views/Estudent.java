@@ -5,6 +5,10 @@
  */
 package ds3.practicabasededatos.views;
 
+import ds3.practicabasededatos.db.EstudianteDB;
+import ds3.practicabasededatos.model.Estudiante;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author joshuansu
@@ -14,9 +18,17 @@ public class Estudent extends javax.swing.JDialog {
     /**
      * Creates new form Estudent
      */
-    public Estudent(java.awt.Frame parent, boolean modal) {
+    private final Estudiante E;
+    
+    public Estudent(java.awt.Frame parent, boolean modal, Estudiante e) {
         super(parent, modal);
         initComponents();
+        if (e == null) {
+            E = new Estudiante();
+        } else {
+            E = e;
+            llenarDatos();
+        }
     }
 
     /**
@@ -125,50 +137,8 @@ public class Estudent extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        save();
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Estudent.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Estudent.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Estudent.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Estudent.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                Estudent dialog = new Estudent(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JRadioButton activo;
@@ -182,4 +152,22 @@ public class Estudent extends javax.swing.JDialog {
     private javax.swing.JTextField nombre;
     private javax.swing.JComboBox<String> sexo;
     // End of variables declaration//GEN-END:variables
+
+    private void save() {
+        try {
+            EstudianteDB.getInstance().saveEstudiante(E);
+            JOptionPane.showMessageDialog(this, "Se guardo exitosamente");
+            dispose();
+        } catch (Exception ex) {
+            System.out.println("Error al Guardar: " + ex.getMessage());
+        }
+        
+    }
+    
+    private void llenarDatos() {
+        nombre.setText(E.getNombre());
+        expediente.setText(String.valueOf(E.getExpediente()));
+        sexo.setSelectedIndex("M".equals(E.getSexo()) ? 0 : 1);
+        activo.setSelected(E.isActivo());
+    }
 }
