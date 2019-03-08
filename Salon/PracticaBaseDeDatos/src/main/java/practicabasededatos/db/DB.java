@@ -1,4 +1,4 @@
-package ds3.practicabasededatos.db;
+package practicabasededatos.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,7 +9,6 @@ public class DB {
     private final String url;
     private final String usuario;
     private final String password;
-    private Connection conn;
 
     protected DB(String host, String inst, String port, String db, String usuario, String password) throws Exception {
         switch (inst) {
@@ -36,10 +35,7 @@ public class DB {
     }
 
     public Connection getConnection() throws SQLException {
-        if (conn == null) {
-            conn = DriverManager.getConnection(getUrl(), getUss(), getPwd());
-        }
-        return conn;
+        return DriverManager.getConnection(getUrl(), getUss(), getPwd());
     }
 
     public String getUrl() {

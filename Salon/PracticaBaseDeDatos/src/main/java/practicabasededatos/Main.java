@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ds3.practicabasededatos;
+package practicabasededatos;
 
-import ds3.practicabasededatos.db.EstudianteDB;
-import ds3.practicabasededatos.model.Estudiante;
-import ds3.practicabasededatos.views.Estudent;
+import practicabasededatos.db.EstudianteDB;
+import practicabasededatos.model.Estudiante;
+import practicabasededatos.views.Estudent;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -142,11 +142,27 @@ public final class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        int row = tabla.getSelectedRow();
-        estudentView(null);
+        if (tabla.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un Estudiante");
+            return;
+        }
+
+        Estudiante estudiante = null;
+        try {
+            estudiante = EstudianteDB.getInstance().getEstudianteById(Long.valueOf(tabla.getValueAt(tabla.getSelectedRow(), 0).toString()));
+        } catch (Exception ex) {
+            System.out.println("Error al buscar Estudiante: " + ex.getMessage());
+        }
+
+        estudentView(estudiante);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        if (tabla.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un Estudiante");
+            return;
+        }
+
         deleteEstudents();
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -196,7 +212,13 @@ public final class Main extends javax.swing.JFrame {
     private void deleteEstudents() {
         int res = JOptionPane.showConfirmDialog(this, "Seguro que desea borrar este elemento?");
         if (res == JOptionPane.YES_OPTION) {
-            JOptionPane.showMessageDialog(this, "Borrado.");
+            try {
+                EstudianteDB.getInstance().deleteEstudiante(Long.valueOf(tabla.getValueAt(tabla.getSelectedRow(), 0).toString()));
+                JOptionPane.showMessageDialog(this, "Estudiante Borrado.");
+                llenarTabla();
+            } catch (Exception ex) {
+                System.out.println("Error al Borrar Estudiante: " + ex.getMessage());
+            }
         }
     }
 
@@ -222,6 +244,7 @@ public final class Main extends javax.swing.JFrame {
             });
             tabla.setModel(model);
         } catch (Exception ex) {
+            ex.printStackTrace();
             System.out.println("Error: " + ex.getMessage());
         }
     }

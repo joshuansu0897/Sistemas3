@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ds3.practicabasededatos.views;
+package practicabasededatos.views;
 
-import ds3.practicabasededatos.db.EstudianteDB;
-import ds3.practicabasededatos.model.Estudiante;
+import practicabasededatos.db.EstudianteDB;
+import practicabasededatos.model.Estudiante;
 import javax.swing.JOptionPane;
 
 /**
@@ -19,7 +19,7 @@ public class Estudent extends javax.swing.JDialog {
      * Creates new form Estudent
      */
     private final Estudiante E;
-    
+
     public Estudent(java.awt.Frame parent, boolean modal, Estudiante e) {
         super(parent, modal);
         initComponents();
@@ -154,6 +154,33 @@ public class Estudent extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private void save() {
+        if (nombre.getText().trim().equals("")) {
+            JOptionPane.showMessageDialog(this, "Nombre Invalido");
+            return;
+        }
+        E.setNombre(nombre.getText().trim());
+
+        if (!expediente.getText().trim().matches("[0-9]+")) {
+            JOptionPane.showMessageDialog(this, "Expediente Invalido");
+            return;
+        }
+        E.setExpediente(Long.valueOf(expediente.getText().trim()));
+
+        String sexoString = sexo.getSelectedItem().toString();
+        switch (sexoString) {
+            case "Hombre":
+                E.setSexo("H");
+                break;
+            case "Mujer":
+                E.setSexo("M");
+                break;
+            default:
+                E.setSexo("?");
+                break;
+        }
+
+        E.setActivo(activo.isSelected());
+
         try {
             EstudianteDB.getInstance().saveEstudiante(E);
             JOptionPane.showMessageDialog(this, "Se guardo exitosamente");
@@ -161,9 +188,9 @@ public class Estudent extends javax.swing.JDialog {
         } catch (Exception ex) {
             System.out.println("Error al Guardar: " + ex.getMessage());
         }
-        
+
     }
-    
+
     private void llenarDatos() {
         nombre.setText(E.getNombre());
         expediente.setText(String.valueOf(E.getExpediente()));

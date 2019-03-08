@@ -1,18 +1,18 @@
-package ds3.practicabasededatos.model;
+package practicabasededatos.model;
 
 public class Estudiante {
 
     private boolean activo;
-    private int expediente;
+    private long expediente;
     private String nombre;
     private String sexo;
-    private int id;
+    private long id;
 
     public Estudiante() {
         this.id = -1;
     }
 
-    public Estudiante(int id, boolean activo, int expediente, String nombre, String sexo) {
+    public Estudiante(long id, boolean activo, long expediente, String nombre, String sexo) {
         this.id = id;
         this.activo = activo;
         this.expediente = expediente;
@@ -20,11 +20,11 @@ public class Estudiante {
         this.sexo = sexo;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -36,11 +36,11 @@ public class Estudiante {
         this.activo = activo;
     }
 
-    public int getExpediente() {
+    public long getExpediente() {
         return expediente;
     }
 
-    public void setExpediente(int expediente) {
+    public void setExpediente(long expediente) {
         this.expediente = expediente;
     }
 
