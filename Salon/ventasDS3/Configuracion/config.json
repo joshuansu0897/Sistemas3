@@ -1,0 +1,8 @@
+{
+    "Server": "localhost",
+    "DataBase": "MySQL",
+    "Port": "3306",
+    "NameDataBase": "VentasDS3",
+    "User": "root",
+    "Password": "example"
+}
