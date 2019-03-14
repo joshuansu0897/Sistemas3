@@ -5,6 +5,10 @@
  */
 package ventasds3.catalogos.articulos;
 
+import javax.swing.table.DefaultTableModel;
+import ventasds3.db.ArticuloDB;
+import ventasds3.model.Articulo;
+
 /**
  *
  * @author joshuansu
@@ -20,6 +24,8 @@ public class Articulos extends javax.swing.JDialog {
     public Articulos(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+
+        llenarTabla();
     }
 
     /**
@@ -32,7 +38,7 @@ public class Articulos extends javax.swing.JDialog {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        table = new javax.swing.JTable();
+        tabla = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -40,23 +46,30 @@ public class Articulos extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        table.setModel(new javax.swing.table.DefaultTableModel(
+        tabla.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "id", "nombre", "cantidad", "precio", "activo"
             }
         ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(table);
+        jScrollPane1.setViewportView(tabla);
 
         jButton1.setText("Nuevo");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -116,9 +129,7 @@ public class Articulos extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Articulo articulo = new Articulo(this, true);
-        articulo.setLocationRelativeTo(this);
-        articulo.setVisible(true);
+        showArticuloView(null);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -127,6 +138,31 @@ public class Articulos extends javax.swing.JDialog {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable table;
+    private javax.swing.JTable tabla;
     // End of variables declaration//GEN-END:variables
+
+    private void showArticuloView(Articulo art) {
+        ArticuloView articulo = new ArticuloView(this, true, art);
+        articulo.setLocationRelativeTo(this);
+        articulo.setVisible(true);
+    }
+
+    private void llenarTabla() {
+        try {
+            DefaultTableModel model = (DefaultTableModel) tabla.getModel();
+            model.setRowCount(0);
+            ArticuloDB.getInstance().getArticulos().forEach(c -> {
+                model.addRow(new Object[]{
+                    c.getId(),
+                    c.getNombre(),
+                    c.getCantidad(),
+                    c.getPrecio(),
+                    c.isActivo()
+                });
+            });
+            tabla.setModel(model);
+        } catch (Exception ex) {
+            System.out.println("Error al llenar la tabla: " + ex.getMessage());
+        }
+    }
 }

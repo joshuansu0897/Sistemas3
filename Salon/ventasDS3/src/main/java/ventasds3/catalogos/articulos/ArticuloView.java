@@ -5,18 +5,33 @@
  */
 package ventasds3.catalogos.articulos;
 
+import javax.swing.JOptionPane;
+import ventasds3.model.Articulo;
+
 /**
  *
  * @author joshuansu
  */
-public class Articulo extends javax.swing.JDialog {
+public class ArticuloView extends javax.swing.JDialog {
 
     /**
      * Creates new form ArticuloD
+     *
+     * @param parent
+     * @param modal
+     * @param a
      */
-    public Articulo(java.awt.Dialog parent, boolean modal) {
+    private final Articulo Articulo;
+
+    public ArticuloView(java.awt.Dialog parent, boolean modal, Articulo a) {
         super(parent, modal);
         initComponents();
+        if (a == null) {
+            Articulo = new Articulo();
+        } else {
+            Articulo = a;
+            showData();
+        }
     }
 
     /**
@@ -34,7 +49,7 @@ public class Articulo extends javax.swing.JDialog {
         cantidad = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         precio = new javax.swing.JTextField();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        activo = new javax.swing.JCheckBox();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
@@ -46,9 +61,14 @@ public class Articulo extends javax.swing.JDialog {
 
         jLabel3.setText("Precio");
 
-        jCheckBox1.setText("Activo");
+        activo.setText("Activo");
 
         jButton1.setText("Guardar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Salir");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -79,7 +99,7 @@ public class Articulo extends javax.swing.JDialog {
                             .addComponent(jButton2))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jCheckBox1)
+                            .addComponent(activo)
                             .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING)))
                     .addComponent(nombre))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -97,7 +117,7 @@ public class Articulo extends javax.swing.JDialog {
                     .addComponent(cantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
                     .addComponent(precio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jCheckBox1))
+                    .addComponent(activo))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
@@ -111,15 +131,52 @@ public class Articulo extends javax.swing.JDialog {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        save();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox activo;
     private javax.swing.JTextField cantidad;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JTextField nombre;
     private javax.swing.JTextField precio;
     // End of variables declaration//GEN-END:variables
+
+    private void save() {
+        if (nombre.getText().trim().equals("")) {
+            JOptionPane.showMessageDialog(this, "nombre invalido");
+            return;
+        }
+        Articulo.setNombre(nombre.getText().trim());
+
+        if (cantidad.getText().trim().equals("")) {
+            JOptionPane.showMessageDialog(this, "cantidad invalida");
+            return;
+        }
+        Articulo.setCantidad(Long.getLong(cantidad.getText().trim()));
+        
+        
+        if (precio.getText().trim().equals("")) {
+            JOptionPane.showMessageDialog(this, "precio invalido");
+            return;
+        }
+        Articulo.setPrecio(Long.getLong(precio.getText().trim()));
+        
+        Articulo.setActivo(activo.isSelected());
+        
+        // aqui ya va para guardar
+    }
+
+    private void showData() {
+        nombre.setText(Articulo.getNombre());
+        precio.setText(String.valueOf(Articulo.getPrecio()));
+        cantidad.setText(String.valueOf(Articulo.getCantidad()));
+        activo.setSelected(Articulo.isActivo());
+    }
 }
