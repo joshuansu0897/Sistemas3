@@ -5,7 +5,11 @@
  */
 package ventasds3.catalogos.articulos;
 
+import java.awt.HeadlessException;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import ventasds3.Utils.Util;
+import ventasds3.db.ArticuloDB;
 import ventasds3.model.Articulo;
 
 /**
@@ -155,22 +159,27 @@ public class ArticuloView extends javax.swing.JDialog {
         }
         Articulo.setNombre(nombre.getText().trim());
 
-        if (cantidad.getText().trim().equals("")) {
+        if (!Util.isLong(cantidad.getText().trim())) {
             JOptionPane.showMessageDialog(this, "cantidad invalida");
             return;
         }
-        Articulo.setCantidad(Long.getLong(cantidad.getText().trim()));
-        
-        
-        if (precio.getText().trim().equals("")) {
+        Articulo.setCantidad(Long.valueOf(cantidad.getText().trim()));
+
+        if (!Util.isDouble(precio.getText().trim())) {
             JOptionPane.showMessageDialog(this, "precio invalido");
             return;
         }
-        Articulo.setPrecio(Long.getLong(precio.getText().trim()));
-        
+        Articulo.setPrecio(Double.valueOf(precio.getText().trim()));
+
         Articulo.setActivo(activo.isSelected());
-        
-        // aqui ya va para guardar
+
+        try {
+            ArticuloDB.getInstance().save(Articulo);
+            JOptionPane.showMessageDialog(this, "Se guardo correctamente.");
+            dispose();
+        } catch (HeadlessException | SQLException ex) {
+            System.out.println("Error al intentar guardar: " + ex.getMessage());
+        }
     }
 
     private void showData() {

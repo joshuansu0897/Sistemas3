@@ -5,6 +5,7 @@
  */
 package ventasds3.catalogos.articulos;
 
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import ventasds3.db.ArticuloDB;
 import ventasds3.model.Articulo;
@@ -79,8 +80,18 @@ public class Articulos extends javax.swing.JDialog {
         });
 
         jButton2.setText("Editar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("Eliminar");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton4.setText("Salir");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
@@ -132,6 +143,28 @@ public class Articulos extends javax.swing.JDialog {
         showArticuloView(null);
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        long id = getIdItemSelected();
+
+        if (id == -1) {
+            return;
+        }
+
+        Articulo articulo = null;
+
+        try {
+            articulo = ArticuloDB.getInstance().getById(id);
+        } catch (Exception ex) {
+            System.out.println("Error al buscar Articulo: " + ex.getMessage());
+        }
+
+        showArticuloView(articulo);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        delete();
+    }//GEN-LAST:event_jButton3ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -145,13 +178,23 @@ public class Articulos extends javax.swing.JDialog {
         ArticuloView articulo = new ArticuloView(this, true, art);
         articulo.setLocationRelativeTo(this);
         articulo.setVisible(true);
+        llenarTabla();
+    }
+
+    private long getIdItemSelected() {
+        if (tabla.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un Articulo");
+            return -1;
+        }
+
+        return Long.valueOf(tabla.getValueAt(tabla.getSelectedRow(), 0).toString());
     }
 
     private void llenarTabla() {
         try {
             DefaultTableModel model = (DefaultTableModel) tabla.getModel();
             model.setRowCount(0);
-            ArticuloDB.getInstance().getArticulos().forEach(c -> {
+            ArticuloDB.getInstance().getAll().forEach(c -> {
                 model.addRow(new Object[]{
                     c.getId(),
                     c.getNombre(),
@@ -163,6 +206,26 @@ public class Articulos extends javax.swing.JDialog {
             tabla.setModel(model);
         } catch (Exception ex) {
             System.out.println("Error al llenar la tabla: " + ex.getMessage());
+        }
+    }
+
+    private void delete() {
+        long id = getIdItemSelected();
+        
+        if (id == -1) {
+            return;
+        }
+
+        int res = JOptionPane.showConfirmDialog(this, "Seguro que desea borrar este elemento?");
+
+        if (res == JOptionPane.YES_OPTION) {
+            try {
+                ArticuloDB.getInstance().delete(id);
+                JOptionPane.showMessageDialog(this, "Articulo Borrado.");
+                llenarTabla();
+            } catch (Exception ex) {
+                System.out.println("Error al Borrar Articulo: " + ex.getMessage());
+            }
         }
     }
 }
