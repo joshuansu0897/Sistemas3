@@ -6,6 +6,7 @@
 package ventasds3;
 
 import ventasds3.catalogos.articulos.Articulos;
+import ventasds3.catalogos.empleado.Empleados;
 
 
 /**
@@ -57,6 +58,11 @@ public class Main extends javax.swing.JFrame {
         catalogos.add(jMenuItem5);
 
         jMenuItem4.setText("Empleados");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
         catalogos.add(jMenuItem4);
 
         jMenuItem2.setText("Sucursales");
@@ -103,6 +109,12 @@ public class Main extends javax.swing.JFrame {
         articulos.setLocationRelativeTo(this);
         articulos.setVisible(true);
     }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        Empleados empleados = new Empleados(this, true);
+        empleados.setLocationRelativeTo(this);
+        empleados.setVisible(true);
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     /**
      * @param args the command line arguments
