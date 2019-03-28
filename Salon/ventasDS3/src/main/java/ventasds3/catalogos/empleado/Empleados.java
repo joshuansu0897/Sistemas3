@@ -170,7 +170,7 @@ public class Empleados extends javax.swing.JDialog {
     private javax.swing.JTable tabla;
     // End of variables declaration//GEN-END:variables
 
- private void showEmpleadoView(Empleado empleado) {
+    private void showEmpleadoView(Empleado empleado) {
         EmpleadoView ev = new EmpleadoView(this, true, empleado);
         ev.setLocationRelativeTo(this);
         ev.setVisible(true);
@@ -204,7 +204,7 @@ public class Empleados extends javax.swing.JDialog {
 
     private void delete() {
         long id = getIdItemSelected();
-        
+
         if (id == -1) {
             return;
         }

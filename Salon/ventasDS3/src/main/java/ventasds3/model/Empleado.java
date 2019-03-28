@@ -10,6 +10,7 @@ package ventasds3.model;
  * @author joshuansu
  */
 public class Empleado {
+
     private long id;
     private String nombre;
     private double salario;
@@ -17,7 +18,7 @@ public class Empleado {
     public Empleado() {
         this.id = -1;
     }
-    
+
     public Empleado(String nombre, double salario) {
         this.id = -1;
         this.nombre = nombre;

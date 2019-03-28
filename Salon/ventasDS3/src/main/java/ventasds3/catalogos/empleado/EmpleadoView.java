@@ -135,8 +135,8 @@ public class EmpleadoView extends javax.swing.JDialog {
         nombre.setText(Empleado.getNombre());
         salario.setText(String.valueOf(Empleado.getSalario()));
     }
-    
-    private void save(){
+
+    private void save() {
         if (nombre.getText().trim().equals("")) {
             JOptionPane.showMessageDialog(this, "nombre invalido");
             return;
@@ -148,7 +148,6 @@ public class EmpleadoView extends javax.swing.JDialog {
             return;
         }
         Empleado.setSalario(Double.valueOf(salario.getText().trim()));
-
 
         try {
             EmpleadoDB.getInstance().save(Empleado);
