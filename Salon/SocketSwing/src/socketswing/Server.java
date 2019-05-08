@@ -12,9 +12,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -27,7 +24,6 @@ public class Server extends javax.swing.JFrame {
      */
     private ServerSocket SERVIDOR;
     private Map<String, Socket> CLIENTES;
-    private Map<String, DataInputStream> DISs;
     private Map<String, DataOutputStream> DOSs;
 
     public Server() {
@@ -35,26 +31,71 @@ public class Server extends javax.swing.JFrame {
         try {
             SERVIDOR = new ServerSocket(8080);
             CLIENTES = new HashMap<>();
-            DISs = new HashMap<>();
             DOSs = new HashMap<>();
 
             Thread clientLisent = new Thread() {
                 @Override
                 public void run() {
                     try {
-                        Socket cl = SERVIDOR.accept();
-                        DataInputStream dis = new DataInputStream(cl.getInputStream());
-                        DataOutputStream dos = new DataOutputStream(cl.getOutputStream());
+                        while (true) {
+                            Socket cl = SERVIDOR.accept();
+                            DataInputStream dis = new DataInputStream(cl.getInputStream());
+                            DataOutputStream dos = new DataOutputStream(cl.getOutputStream());
 
-                        String uuid = dis.readUTF();
+                            String uuid = dis.readUTF();
 
-                        dos.writeUTF("Bienvenido.");
-                        dos.flush();
+                            dos.writeUTF("Bienvenido.");
+                            dos.flush();
 
-                        CLIENTES.put(uuid, cl);
-                        DISs.put(uuid, dis);
-                        DOSs.put(uuid, dos);
-                        chat.append("Server: Cliente nuevo con uuid " + uuid + "\n");
+                            CLIENTES.put(uuid, cl);
+                            DOSs.put(uuid, dos);
+                            sendMessage("Cliente nuevo con uuid " + uuid, null);
+
+                            Thread chatLisent = new Thread() {
+                                @Override
+                                public void run() {
+                                    while (true) {
+                                        String UUID = uuid;
+                                        DataInputStream DIS = dis;
+
+                                        String msg = null;
+                                        try {
+                                            msg = DIS.readUTF().trim();
+                                        } catch (IOException ex) {
+                                            System.out.println("Error: " + ex.getMessage());
+                                        }
+
+                                        if (msg == null || "".equals(msg)) {
+                                            continue;
+                                        }
+
+                                        if (msg.equals("DESCONECTAR")) {
+                                            try {
+                                                synchronized (DOSs) {
+                                                    DOSs.get(UUID).close();
+                                                    DOSs.remove(UUID);
+                                                }
+                                                synchronized (CLIENTES) {
+                                                    CLIENTES.get(UUID).close();
+                                                    CLIENTES.remove(UUID);
+                                                }
+                                            } catch (IOException ex) {
+                                                System.out.println("Error: " + ex.getMessage());
+                                            }
+                                            chat.append(UUID + ": se desconecto....\n");
+                                            sendMessage("se desconecto....", UUID);
+                                            break;
+                                        }
+
+                                        chat.append(UUID + ": " + msg + "\n");
+                                        sendMessage(msg, UUID);
+                                    }
+                                    Thread.currentThread().interrupt();
+                                }
+                            };
+
+                            chatLisent.start();
+                        }
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
@@ -85,6 +126,7 @@ public class Server extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Server");
 
+        chat.setEditable(false);
         chat.setColumns(20);
         chat.setRows(5);
         jScrollPane1.setViewportView(chat);
@@ -109,7 +151,7 @@ public class Server extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 726, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -197,7 +239,7 @@ public class Server extends javax.swing.JFrame {
             }
 
             if (uuidSender != null) {
-                message += "*&&UUID&&*" + uuidSender;
+                message += "&&UUID&&" + uuidSender;
             }
 
             DataOutputStream dos = entry.getValue();
@@ -209,6 +251,9 @@ public class Server extends javax.swing.JFrame {
             }
         }
 
-        chat.append("Server: " + message + "\n");
+        if (uuidSender == null) {
+            mensaje.setText("");
+            chat.append("Server: " + message + "\n");
+        }
     }
 }

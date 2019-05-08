@@ -16,12 +16,12 @@ import java.util.UUID;
  * @author joshuansu
  */
 public class Cliente extends javax.swing.JFrame {
-
+    
     private Socket CLIENTE;
     private DataInputStream DIS;
     private DataOutputStream DOS;
     private String myUuid;
-
+    
     public Cliente() {
         initComponents();
         try {
@@ -29,33 +29,41 @@ public class Cliente extends javax.swing.JFrame {
             System.out.println("Soy el cliente, ya me conecte.");
             DIS = new DataInputStream(CLIENTE.getInputStream());
             DOS = new DataOutputStream(CLIENTE.getOutputStream());
-
+            
             UUID uuid = UUID.randomUUID();
             myUuid = uuid.toString();
             System.out.println("My uuid: " + myUuid);
-
+            
             DOS.writeUTF(myUuid);
             DOS.flush();
-
+            
             sendMessage("Me conecte, mi uuid " + myUuid);
-
+            
             Thread chatLisent = new Thread() {
                 @Override
                 public void run() {
                     try {
-                        String msg = DIS.readUTF().trim();
-                        if (msg.contains("*&&UUID&&*")) {
-                            String[] words = msg.split("*&&UUID&&*");
-                            chat.append(words[1] + ": " + words[0] + "\n");
-                        } else {
-                            chat.append("Server: " + DIS.readUTF() + "\n");
+                        while (true) {
+                            String msg = DIS.readUTF().trim();
+                            
+                            if (msg.contains(myUuid)) {
+                                continue;
+                            }
+                            
+                            if (msg.contains("&&UUID&&")) {
+                                String[] words = msg.split("&&UUID&&");
+                                chat.append(words[1] + ": " + words[0] + "\n");
+                            } else {
+                                chat.append("Server: " + msg + "\n");
+                            }
+                            
                         }
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
                 }
             };
-
+            
             chatLisent.start();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -79,6 +87,7 @@ public class Cliente extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Cliente");
 
+        chat.setEditable(false);
         chat.setColumns(20);
         chat.setRows(5);
         jScrollPane1.setViewportView(chat);
@@ -103,7 +112,7 @@ public class Cliente extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 726, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -179,18 +188,19 @@ public class Cliente extends javax.swing.JFrame {
 
     private void sendMessage(String msg) {
         String message = msg.trim();
-
+        
         if (message.equals("")) {
             return;
         }
-
+        
         try {
-            DOS.writeUTF(message + "*&&UUID&&*");
+            DOS.writeUTF(message);
             DOS.flush();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
+        
+        mensaje.setText("");
         chat.append("Yo: " + message + "\n");
     }
 }
