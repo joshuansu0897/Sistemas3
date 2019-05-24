@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suite name="Simple Reporter Suite">
+
+  <parameter name="pdfngreport-properties" value="pdfngreport.properties" />
+
+  <listeners>
+    <listener class-name="com.uttesh.pdfngreport.PDFReportListener" />
+  </listeners>
+
+  <test name="Simple Reporter test">
+    <classes>
+      <class name="MovimientoDBNGTest" />
+      <class name="ProductoDBNGTest" />
+      <class name="ProveedorDBNGTest" />
+      <class name="SpecificQuerysNGTest" />
+      <class name="UserDBNGTest" />
+      <class name="MovimientoNGTest" />
+      <class name="ProductoNGTest" />
+      <class name="ProveedorNGTest" />
+      <class name="UserNGTest" />
+      <class name="UtilNGTest" />
+    </classes>
+  </test>
+</suite>
