@@ -35,6 +35,9 @@ public class Menu extends javax.swing.JFrame {
         initComponents();
         llenarCombos();
         model = (DefaultTableModel) table.getModel();
+        sucursales = new ArrayList();
+        clientes = new ArrayList();
+        productos = new ArrayList();
     }
 
     /**
