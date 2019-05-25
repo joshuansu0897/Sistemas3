@@ -41,5 +41,14 @@
 ### Productos
 ![](https://i.imgur.com/lZX2xvU.png)
 
+### Venta
+![](https://i.imgur.com/VcBaj3i.png)
+
+### Ventas
+![](https://i.imgur.com/TFgCMWF.png)
+
+### Detalles Venta
+![](https://i.imgur.com/61F65pb.png)
+
 ## DataBase (MySQL)
 ![DataBase](https://i.imgur.com/dAt9bPQ.png)
