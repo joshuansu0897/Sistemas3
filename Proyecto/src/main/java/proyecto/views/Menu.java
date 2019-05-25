@@ -33,11 +33,11 @@ public class Menu extends javax.swing.JFrame {
 
     public Menu() {
         initComponents();
-        llenarCombos();
-        model = (DefaultTableModel) table.getModel();
         sucursales = new ArrayList();
         clientes = new ArrayList();
         productos = new ArrayList();
+        llenarCombos();
+        model = (DefaultTableModel) table.getModel();
     }
 
     /**
