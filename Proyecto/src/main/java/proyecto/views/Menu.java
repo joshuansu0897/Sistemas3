@@ -19,22 +19,21 @@ import proyecto.model.Sucursal;
 import proyecto.model.Venta;
 import proyecto.views.cliente.ClienteMenu;
 import proyecto.views.sucursal.SucursalMenu;
+import proyecto.views.venta.VentaMenu;
 
 public class Menu extends javax.swing.JFrame {
-    
+
     private final static Logger logger = Logger.getLogger(Menu.class);
-    
+
     private ArrayList<Producto> productos;
     private ArrayList<Sucursal> sucursales;
     private ArrayList<Cliente> clientes;
-    
+
     private DefaultTableModel model;
-    
+
     public Menu() {
         initComponents();
-        llenarClientes();
-        llenarProductos();
-        llenarSucursales();
+        llenarCombos();
         model = (DefaultTableModel) table.getModel();
     }
 
@@ -320,31 +319,37 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // aun no tiene logica
+        VentaMenu um = new VentaMenu(null, true);
+        um.setLocationRelativeTo(null);
+        um.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         ClienteMenu pm = new ClienteMenu(null, true);
         pm.setLocationRelativeTo(null);
         pm.setVisible(true);
+        llenarCombos();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         ProveedorMenu pm = new ProveedorMenu(null, true);
         pm.setLocationRelativeTo(null);
         pm.setVisible(true);
+        llenarCombos();
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         SucursalMenu pm = new SucursalMenu(null, true);
         pm.setLocationRelativeTo(null);
         pm.setVisible(true);
+        llenarCombos();
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         ProductoMenu pm = new ProductoMenu(null, true);
         pm.setLocationRelativeTo(null);
         pm.setVisible(true);
+        llenarCombos();
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void tablePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_tablePropertyChange
@@ -368,7 +373,7 @@ public class Menu extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Seleccione un Producto");
             return;
         }
-        
+
         int res = JOptionPane.showConfirmDialog(this, "Desea remover el Producto?");
         if (res == JOptionPane.YES_OPTION) {
             srcProducto.addItem(model.getValueAt(table.getSelectedRow(), 0).toString());
@@ -420,10 +425,16 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JTextField txtTotal;
     // End of variables declaration//GEN-END:variables
 
+    private void llenarCombos() {
+        llenarClientes();
+        llenarProductos();
+        llenarSucursales();
+    }
+
     private void llenarClientes() {
         try {
             clientes = ClienteDB.getInstance().getAllClientes();
-            
+
             clientes.forEach(cliente -> {
                 srcCliente.addItem(cliente.getName());
             });
@@ -431,11 +442,11 @@ public class Menu extends javax.swing.JFrame {
             logger.error("Error al actualizar combobox Clientes.", ex);
         }
     }
-    
+
     private void llenarSucursales() {
         try {
             sucursales = SucursalDB.getInstance().getAllSucursales();
-            
+
             sucursales.forEach(sucursale -> {
                 srcSucursal.addItem(sucursale.getName());
             });
@@ -443,20 +454,20 @@ public class Menu extends javax.swing.JFrame {
             logger.error("Error al actualizar combobox Sucursales.", ex);
         }
     }
-    
+
     private void llenarProductos() {
         try {
             productos = ProductoDB.getInstance().getAllProductos();
-            
+
             productos.forEach(producto -> {
                 srcProducto.addItem(producto.getName());
             });
-            
+
         } catch (Exception ex) {
             logger.error("Error al actualizar combobox Productos.", ex);
         }
     }
-    
+
     private void limpiarTabla() {
         for (int i = 0; i < model.getRowCount(); i++) {
             srcProducto.addItem(model.getValueAt(i, 0).toString());
@@ -464,48 +475,48 @@ public class Menu extends javax.swing.JFrame {
         model.setRowCount(0);
         txtTotal.setText("");
     }
-    
+
     private void tableChange() {
         float precio = Float.parseFloat(model.getValueAt(table.getSelectedRow(), 1).toString());
         float cantidad = Float.parseFloat(model.getValueAt(table.getSelectedRow(), 2).toString());
-        
+
         model.setValueAt((precio * cantidad), table.getSelectedRow(), 3);
-        
+
         float total = 0;
         for (int i = 0; i < model.getRowCount(); i++) {
             float t = Float.parseFloat(model.getValueAt(i, 3).toString());
             total += t;
         }
-        
+
         txtTotal.setText(String.valueOf(total));
     }
-    
+
     private void save() {
         ArrayList<ProductosDeVenta> productosDeVentas = new ArrayList();
-        
+
         for (int i = 0; i < model.getRowCount(); i++) {
             ProductosDeVenta producto = new ProductosDeVenta();
             String productoName = model.getValueAt(i, 0).toString();
-            
+
             producto.setIdProducto(productos.stream().filter(p -> p.getName().equals(productoName)).findFirst().get().getId());
             producto.setPrecio(Float.valueOf(model.getValueAt(i, 1).toString()));
             producto.setCantidad(Float.valueOf(model.getValueAt(i, 2).toString()));
-            
+
             productosDeVentas.add(producto);
         }
-        
+
         Venta venta = new Venta();
-        
+
         venta.setProductosDeVentas(productosDeVentas);
-        
+
         String clienteName = srcCliente.getSelectedItem().toString();
         venta.setIdCliente(clientes.stream().filter(p -> p.getName().equals(clienteName)).findFirst().get().getId());
-        
+
         String sucursalName = srcSucursal.getSelectedItem().toString();
         venta.setIdSucursal(sucursales.stream().filter(p -> p.getName().equals(sucursalName)).findFirst().get().getId());
-        
+
         venta.setIdEmpleado(EmpleadoDB.getInstance().getEmpleado().getId());
-        
+
         try {
             VentaDB.getInstance().saveVenta(venta);
             JOptionPane.showMessageDialog(this, "Se guardo exitosamente");
@@ -514,5 +525,5 @@ public class Menu extends javax.swing.JFrame {
             logger.error("Error al intentar guardar en la base de datos.", ex);
         }
     }
-    
+
 }

@@ -2,13 +2,17 @@ package proyecto.db;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Types;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 import proyecto.config.Configuration;
 import org.apache.log4j.Logger;
 import proyecto.model.ProductosDeVenta;
 import proyecto.model.Venta;
+import proyecto.model.VistaVenta;
+import proyecto.model.VistaVentas;
 
 public class VentaDB extends DB {
 
@@ -58,11 +62,7 @@ public class VentaDB extends DB {
         for (ProductosDeVenta productosDeVenta : venta.getProductosDeVentas()) {
             productosDeVenta.setIdVenta(idVenta);
         }
-        
-        venta.getProductosDeVentas().forEach((_item) -> {
-            System.out.println(_item.toString());
-        });
-        
+
         saveProductosDeVenta(venta.getProductosDeVentas());
     }
 
@@ -83,6 +83,50 @@ public class VentaDB extends DB {
             }
             stm.executeBatch();
         }
+    }
+
+    public ArrayList<VistaVentas> getAllVetas() throws Exception {
+        ArrayList<VistaVentas> ventas = new ArrayList();
+
+        String query = "SELECT id, empleado, cliente, sucursal, fecha"
+                + "	FROM VistaVentas";
+
+        try (Connection conSer = getConnection(); PreparedStatement stmSer = conSer.prepareStatement(query)) {
+            try (ResultSet rsSer = stmSer.executeQuery()) {
+                while (rsSer.next()) {
+                    VistaVentas vv = new VistaVentas();
+                    vv.setId(rsSer.getLong("id"));
+                    vv.setEmpleado(rsSer.getString("empleado"));
+                    vv.setCliente(rsSer.getString("cliente"));
+                    vv.setSucursal(rsSer.getString("sucursal"));
+                    vv.setFecha(rsSer.getObject("fecha", LocalDate.class));
+                    ventas.add(vv);
+                }
+            }
+        }
+        return ventas;
+    }
+
+    public ArrayList<VistaVenta> getAllProductosDeVenta(long idVenta) throws Exception {
+        ArrayList<VistaVenta> productos = new ArrayList();
+
+        String query = "SELECT producto, precio, cantidad"
+                + "	FROM VistaVenta WHERE idVenta=?";
+
+        try (Connection conSer = getConnection(); PreparedStatement stmSer = conSer.prepareStatement(query)) {
+            stmSer.setLong(1, idVenta);
+            try (ResultSet rsSer = stmSer.executeQuery()) {
+                while (rsSer.next()) {
+                    VistaVenta vv = new VistaVenta();
+                    vv.setProducto(rsSer.getString("producto"));
+                    vv.setPrecio(rsSer.getFloat("precio"));
+                    vv.setCantidad(rsSer.getFloat("cantidad"));
+                    vv.setIdVenta(idVenta);
+                    productos.add(vv);
+                }
+            }
+        }
+        return productos;
     }
 
 }
