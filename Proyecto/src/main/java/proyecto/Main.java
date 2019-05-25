@@ -31,7 +31,7 @@ public class Main extends javax.swing.JFrame {
         try {
             ArrayList<Empleado> users = EmpleadoDB.getInstance().getAllEmpleados();
             if (users.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Registra tu primer Empleado.", "Emmpledo Requerido", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Registra tu primer Empleado.", "Empledo Requerido", JOptionPane.INFORMATION_MESSAGE);
                 EmpleadoView uv = new EmpleadoView(this, true, null);
                 uv.setLocationRelativeTo(null);
                 uv.setVisible(true);
