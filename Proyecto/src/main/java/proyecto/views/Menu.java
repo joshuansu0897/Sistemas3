@@ -437,6 +437,7 @@ public class Menu extends javax.swing.JFrame {
     private void llenarClientes() {
         try {
             clientes.clear();
+            srcCliente.removeAllItems();
             clientes = ClienteDB.getInstance().getAllClientes();
 
             clientes.forEach(cliente -> {
@@ -450,6 +451,7 @@ public class Menu extends javax.swing.JFrame {
     private void llenarSucursales() {
         try {
             sucursales.clear();
+            srcSucursal.removeAllItems();
             sucursales = SucursalDB.getInstance().getAllSucursales();
 
             sucursales.forEach(sucursale -> {
@@ -463,6 +465,7 @@ public class Menu extends javax.swing.JFrame {
     private void llenarProductos() {
         try {
             productos.clear();
+            srcProducto.removeAllItems();
             productos = ProductoDB.getInstance().getAllProductos();
 
             productos.forEach(producto -> {
