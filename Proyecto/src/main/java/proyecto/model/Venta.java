@@ -1,6 +1,7 @@
 package proyecto.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class Venta {
 
@@ -8,6 +9,7 @@ public class Venta {
     private long idCliente;
     private long idSucursal;
     private long idEmpleado;
+    private ArrayList<ProductosDeVenta> productosDeVentas;
     private LocalDate createAt;
     private LocalDate updateAt;
 
@@ -15,22 +17,32 @@ public class Venta {
         this.id = -1;
     }
 
-    public Venta(long idCliente, long idSucursal, long idEmpleado, LocalDate createAt, LocalDate updateAt) {
+    public Venta(long idCliente, long idSucursal, long idEmpleado, ArrayList<ProductosDeVenta> productosDeVentas, LocalDate createAt, LocalDate updateAt) {
         this.id = -1;
         this.idCliente = idCliente;
         this.idSucursal = idSucursal;
         this.idEmpleado = idEmpleado;
+        this.productosDeVentas = productosDeVentas;
         this.createAt = createAt;
         this.updateAt = updateAt;
     }
 
-    public Venta(long id, long idCliente, long idSucursal, long idEmpleado, LocalDate createAt, LocalDate updateAt) {
+    public Venta(long id, long idCliente, long idSucursal, long idEmpleado, ArrayList<ProductosDeVenta> productosDeVentas, LocalDate createAt, LocalDate updateAt) {
         this.id = id;
         this.idCliente = idCliente;
         this.idSucursal = idSucursal;
         this.idEmpleado = idEmpleado;
+        this.productosDeVentas = productosDeVentas;
         this.createAt = createAt;
         this.updateAt = updateAt;
+    }
+
+    public ArrayList<ProductosDeVenta> getProductosDeVentas() {
+        return productosDeVentas;
+    }
+
+    public void setProductosDeVentas(ArrayList<ProductosDeVenta> productosDeVentas) {
+        this.productosDeVentas = productosDeVentas;
     }
 
     public long getId() {

@@ -11,6 +11,19 @@ public class ProductosDeVenta {
     private LocalDate createAt;
     private LocalDate updateAt;
 
+    public ProductosDeVenta() {
+        this.idVenta = -1;
+    }
+
+    public ProductosDeVenta(long idProducto, float precio, float cantidad, LocalDate createAt, LocalDate updateAt) {
+        this.idVenta = -1;
+        this.idProducto = idProducto;
+        this.precio = precio;
+        this.cantidad = cantidad;
+        this.createAt = createAt;
+        this.updateAt = updateAt;
+    }
+
     public ProductosDeVenta(long idProducto, long idVenta, float precio, float cantidad, LocalDate createAt, LocalDate updateAt) {
         this.idProducto = idProducto;
         this.idVenta = idVenta;
@@ -18,6 +31,15 @@ public class ProductosDeVenta {
         this.cantidad = cantidad;
         this.createAt = createAt;
         this.updateAt = updateAt;
+    }
+
+    public ProductosDeVenta(ProductosDeVenta pdv) {
+        this.idProducto = pdv.getIdProducto();
+        this.idVenta = pdv.getIdVenta();
+        this.precio = pdv.getPrecio();
+        this.cantidad = pdv.getCantidad();
+        this.createAt = pdv.getCreateAt();
+        this.updateAt = pdv.getUpdateAt();
     }
 
     public long getIdProducto() {
@@ -66,6 +88,11 @@ public class ProductosDeVenta {
 
     public void setUpdateAt(LocalDate updateAt) {
         this.updateAt = updateAt;
+    }
+
+    @Override
+    public String toString() {
+        return "ProductosDeVenta{" + "idProducto=" + idProducto + ", idVenta=" + idVenta + ", precio=" + precio + ", cantidad=" + cantidad + ", createAt=" + createAt + ", updateAt=" + updateAt + '}';
     }
 
 }

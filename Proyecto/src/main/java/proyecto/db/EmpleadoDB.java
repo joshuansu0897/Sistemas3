@@ -21,6 +21,7 @@ public class EmpleadoDB extends DB {
 
     private final static Logger logger = Logger.getLogger(EmpleadoDB.class);
     private static EmpleadoDB instance;
+    private static Empleado empleado;
 
     private EmpleadoDB(String host, String inst, String port, String db, String usuario, String password) throws Exception {
         super(host, inst, port, db, usuario, password);
@@ -50,7 +51,9 @@ public class EmpleadoDB extends DB {
             return false;
         }
 
-        String query = "SELECT password "
+        empleado = new Empleado();
+
+        String query = "SELECT password, id"
                 + "	FROM Empleado WHERE username=?";
 
         String password = null;
@@ -59,6 +62,8 @@ public class EmpleadoDB extends DB {
             try (ResultSet rs = stmS.executeQuery()) {
                 while (rs.next()) {
                     password = rs.getString("password");
+                    empleado.setUsername(usuario);
+                    empleado.setId(rs.getLong("id"));
                 }
             }
         }
@@ -176,5 +181,9 @@ public class EmpleadoDB extends DB {
             stmSer.setLong(1, id);
             stmSer.executeUpdate();
         }
+    }
+
+    public Empleado getEmpleado() {
+        return empleado;
     }
 }
